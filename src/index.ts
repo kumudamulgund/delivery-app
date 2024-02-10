@@ -1,9 +1,10 @@
 import  { Command } from 'commander';
-import { Vehicle, InputData } from './interfaces';
+import { Vehicle } from './interfaces';
  import { Package } from './models/Package';
 import { OfferCodeManager } from './OfferCodeManager';
+import { Order } from './models/Order';
 
-const parseInput = (input: string[]): InputData => {
+const parseInput = (input: string[]): Order => {
     const [baseDeliveryCost, numberOfPackages, ...rest] = input.map((item) => item.split(' '));
     
     const packages: Package[] = [];
@@ -25,19 +26,15 @@ const parseInput = (input: string[]): InputData => {
   const [count, maxSpeed, maxWeight] = rest.splice(0, 3);
   const vehicles: Vehicle = { count: Number(count), maxSpeed: Number(maxSpeed), maxWeight: Number(maxWeight) };
   
-  return {
-    baseDeliveryCost: Number(baseDeliveryCost),
-    numberOfPackages: Number(numberOfPackages),
-    packages,
-    vehicles,
-  };
+  const order = new Order(Number(baseDeliveryCost), packages, vehicles);
+  return order;
 };
 
 const main = (input: string[]) => {
   OfferCodeManager.initialiseOffercodes();
   try {
-    const data = parseInput(input);
-    console.log(data);
+    const order:Order = parseInput(input);
+    order.printInvoice();
   } catch (error:any) {
     console.log(error.message);
   }

@@ -26,47 +26,28 @@ export class OfferCode {
         return this._offerName;
     }
 
-    set offerName(value: string) {
-        this._offerName = value;
-    }
-
     get minWeight(): number {
         return this._minWeight;
-    }
-
-    set minWeight(value: number) {
-        this._minWeight = value;
     }
 
     get maxWeight(): number {
         return this._maxWeight;
     }
 
-    set maxWeight(value: number) {
-        this._maxWeight = value;
-    }
-
     get minDistance(): number {
         return this._minDistance;
-    }
-
-    set minDistance(value: number) {
-        this._minDistance = value;
     }
     
     get maxDistance(): number {
         return this._maxDistance;
     }
 
-    set maxDistance(value: number) {
-        this._maxDistance = value;
-    }
-
     get discountPercent(): number {
         return this._discountPercent;
     }
 
-    set discountPercent(value: number) {
-        this._discountPercent = value;
+    isOfferValid(weight:number, distance:number):boolean {
+        return (weight >= this._minWeight && weight <= this._maxWeight && 
+            distance >= this._minDistance && distance <= this._maxDistance )
     }
 }
