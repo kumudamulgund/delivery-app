@@ -9,6 +9,7 @@ export class Package {
     private _deliveryCost:number;
     private _discount:number;
     private _offerCode?: OfferCode;
+    private _isPickedForShipment: boolean
 
 
 
@@ -28,6 +29,7 @@ export class Package {
         this._offerCode = offerCodeName ? OfferCodeManager.getOfferCodeByName(offerCodeName) : undefined;
         this._deliveryCost = 0;
         this._discount = 0;
+        this._isPickedForShipment = false;
     }
 
     get id(): string {
@@ -62,11 +64,19 @@ export class Package {
         this._discount = discount;
     }
 
+    get isPickedForShipment(): boolean {
+        return this._isPickedForShipment;
+    }
+
+    set isPickedForShipment(isPicked: boolean) {
+        this._isPickedForShipment = isPicked;
+    }
+
     calculateDeliveryCostAndDiscount(baseDeliveryCost:number):void {
         let cost = baseDeliveryCost + (this._weight * COST_PER_KG) + (this._distance * COST_PER_KM);
         let discount = 0;
         if(this._offerCode && this._offerCode.isOfferValid(this._weight, this._distance)) {
-            const discount = cost*(this._offerCode.discountPercent/100);
+            discount = cost*(this._offerCode.discountPercent/100);
             cost = cost - discount;
         }
         this.setDeliveryCost(cost);
