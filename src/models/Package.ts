@@ -8,15 +8,15 @@ export class Package {
     private _distance: number;
     private _deliveryCost:number;
     private _discount:number;
-    private _offerCode?: OfferCode;
+    private _offerCode: OfferCode | undefined;
     private _isPickedForShipment: boolean;
     private _eta:number;
 
-    constructor(id: string, weight: number, distance: number,offerCodeName?: string) {
+    constructor(id: string, weight: number, distance: number,offerCodeName: string) {
         this._id = id;
         this._weight = weight;
         this._distance = distance;
-        this._offerCode = offerCodeName ? OfferCodeManager.getOfferCodeByName(offerCodeName) : undefined;
+        this._offerCode = OfferCodeManager.getOfferCodeByName(offerCodeName);
         this._deliveryCost = 0;
         this._discount = 0;
         this._isPickedForShipment = false;
@@ -48,7 +48,7 @@ export class Package {
     }
 
     get discount():number {
-        return this.discount;
+        return this._discount;
     }
 
     private setDiscount(discount:number) {
@@ -74,7 +74,7 @@ export class Package {
     calculateDeliveryCostAndDiscount(baseDeliveryCost:number):void {
         let cost = baseDeliveryCost + (this._weight * COST_PER_KG) + (this._distance * COST_PER_KM);
         let discount = 0;
-        if(this._offerCode && this._offerCode.isOfferValid(this._weight, this._distance)) {
+        if(this._offerCode !== undefined  && this._offerCode.isOfferValid(this._weight, this._distance)) {
             discount = parseFloat((cost*(this._offerCode.discountPercent/100)).toFixed(2));
             cost = cost - discount;
         }

@@ -33,11 +33,11 @@ const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehi
       if ([...packages.keys()].includes(id)) {
           throw new Error(`Package id ${id} already exists.`);
       }
-      const weight = parseInt(weightStr);
+      const weight = parseFloat(weightStr);
       if (weight <= 0 || weight > vehicleMaxWeight) {
           throw new Error(`Invalid weight: ${weight}. Weight must be greater than 0 and less than or equal to max vehicle weight.`);
       }
-      const distance = parseInt(distanceStr);
+      const distance = parseFloat(distanceStr);
       if (distance <= 0) {
         throw new Error(`Invalid distance: ${distance}. Distance must be greater than 0.`);
       }
@@ -61,7 +61,7 @@ const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehi
 const parseInput = (input: string[]): Order => {
   try {
     const [baseDeliveryCostStr, numberOfPackagesStr, ...rest] = input.map((item) => item.split(' ')[0]);
-    const baseDeliveryCost = parseInt(baseDeliveryCostStr)
+    const baseDeliveryCost = parseFloat(baseDeliveryCostStr)
     if(isNaN(baseDeliveryCost)) {
       throw new Error("Invalid baseDelivery cost. Must be a number");
     }
@@ -74,11 +74,11 @@ const parseInput = (input: string[]): Order => {
     if(isNaN(count) || count <= 0) {
       throw new Error("Invalid number of vehicles. Must be a number greater than zero");
     }
-    const maxSpeed = parseInt(maxSpeedStr);
+    const maxSpeed = parseFloat(maxSpeedStr);
     if(isNaN(maxSpeed) || maxSpeed <= 0) {
       throw new Error("Invalid number for max speed. Must be a number greater than zero");
     }
-    const maxWeight = parseInt(maxWeightStr);
+    const maxWeight = parseFloat(maxWeightStr);
     if(isNaN(maxWeight) || maxWeight <= 0) {
       throw new Error("Invalid number for max weight. Must be a number greater than zero");
     }
