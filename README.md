@@ -13,9 +13,7 @@
      a. Shipment should contain max packages that a vehicle can carry
      b. Prefer to deliver heavier shipments when there are multiple shipments
      c. If weights of shipments are same, then prefer one with shorter distance.
-
-  # My Approach to solve this problem
-
+    
   ## Installation steps
   Node Version used: v16.13.1
   `npm Install`
@@ -42,3 +40,4 @@
     ![Getting Started](./PackageTest.png)
   2. `isOfferValid` function in OfferCode class
     ![Getting Started](./OfferCodeTest.png)
+  3. `generateBatch` and  `generateShipments` functions within PackageList class which forms the basis for Shipment pickup within Order
