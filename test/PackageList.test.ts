@@ -38,17 +38,14 @@ describe('PackageList class', () => {
 
     describe('generateShipments', () => {
         it('should generate shipments based on the weight limit', () => {
-            // Create a PackageList instance
+
             const packageList = new PackageList();
-            // Insert some packages with different weights
+
             packageList.insertPackage(new Package('1', 10, 100, 'OFR001'));
             packageList.insertPackage(new Package('2', 20, 200, 'OFR002'));
             packageList.insertPackage(new Package('3', 30, 300, 'OFR002'));
-
-            // Call generateShipments with a weight limit of 40
             const shipments = packageList.generateShipments(40);
 
-            // Assert that a shipment is generated with the first two packages
             expect(shipments).toHaveLength(2);
             expect(shipments[0].packages.map(pkg => pkg.id)).toEqual(['3', '1']);
             expect(shipments[1].packages.map(pkg => pkg.id)).toEqual(['2']);
