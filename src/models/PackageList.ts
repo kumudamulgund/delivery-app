@@ -1,4 +1,5 @@
 import { Package } from "./Package";
+import { Shipment } from "./Shipment";
 
 export class PackageNode {
     public value: Package;
@@ -66,8 +67,8 @@ export class PackageList {
         return shipmentLineup;
     }
 
-    generateShipmentBatches (weightLimit:number):Package[][] {
-        const shipmentLineups: Package[][] = [];
+    generateShipments (weightLimit:number):Shipment[] {
+        const shipments: Shipment[] = [];
         let currentLineup:Package[] = [];
         let currentPackageNode:PackageNode | null = this.head;
         while (currentPackageNode) {
@@ -78,13 +79,15 @@ export class PackageList {
             if(currentLineup.length === 0) {
                 break;
             }
-            shipmentLineups.push(currentLineup);
+            const shipment = new Shipment(currentLineup);
+            shipments.push(shipment);
             currentLineup = [];
             currentPackageNode = currentPackageNode.next;
         }
-        return shipmentLineups;
+        return shipments;
     }
 
+    
     
     search(weight: number): Package | null {
         if (!this.head) {

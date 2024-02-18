@@ -1,43 +1,101 @@
-import  { Command } from 'commander';
-import { Vehicle } from './interfaces';
- import { Package } from './models/Package';
+import { Package } from './models/Package';
 import { OfferCodeManager } from './OfferCodeManager';
 import { Order } from './models/Order';
-import { PackageNode, PackageList } from './models/PackageList';
+import { PackageList } from './models/PackageList';
+import { DeliveryPartner } from './models/DeliveryPartner';
+import { DELIVERY_PARTNER_ID_PREFIX } from './models/config';
+import { Shipment } from './models/Shipment';
 
-const parseInput = (input: string[]): PackageList => {
-    const [baseDeliveryCost, numberOfPackages, ...rest] = input.map((item) => item.split(' '));
-    
-    let packageList = new PackageList();
-    for (let i = 0; i < Number(numberOfPackages); i++) {
-      const [idArr, weightArr, distanceArr, offerCodeArr] = rest.splice(0, 4); 
-      const id = idArr && idArr.length > 0 ? idArr[0] : '';
-      const weight = weightArr && weightArr.length > 0 ? Number(weightArr[0]) : 0;
-      const distance = distanceArr && distanceArr.length > 0 ? Number(distanceArr[0]) : 0;
-      const offerCode = offerCodeArr && offerCodeArr.length > 0 ? offerCodeArr[0] : '';
-      try {
-        const pkg = new Package(id, weight, distance, offerCode);
-        packageList.insertPackage(pkg);
-      } catch (error:any) {
-        throw new Error (`Error on ${i}th package input: ${error.message}`);
-      }
+const generateDeliveryPartners = (noOfPartners:number, maxSpeed:number):DeliveryPartner[] => {
+  const deliveryPartners:DeliveryPartner[] = [] 
+  let currentPartnerNo = 0
+  while(currentPartnerNo < noOfPartners) {
+    deliveryPartners.push(new DeliveryPartner(`${DELIVERY_PARTNER_ID_PREFIX}${noOfPartners+1}`, maxSpeed))
+    currentPartnerNo++;
+  }
+  return deliveryPartners;
+}
+
+const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehicleMaxWeight: number):{packages:Map<string, Package>, shipments:Shipment[]} => {
+  let packageList = new PackageList();
+  const packages = new Map<string, Package>();
+
+  if(input.length/4 !== numberOfPackages) {
+    throw new Error(`Invalid package input. Missing package details`);
   }
 
-  
-  const [count, maxSpeed, maxWeight] = rest.splice(0, 3);
-  const vehicles: Vehicle = { count: Number(count), maxSpeed: Number(maxSpeed), maxWeight: Number(maxWeight) };
+  for (let i = 0; i < Number(numberOfPackages); i++) {
+    const [id, weightStr, distanceStr, offerCode] = input.splice(0, 4);
+    try {
+      if (id === '') {
+          throw new Error(`Invalid or empty package id for package:${i + 1}`);
+      }
+      if ([...packages.keys()].includes(id)) {
+          throw new Error(`Package id ${id} already exists.`);
+      }
+      const weight = parseInt(weightStr);
+      if (weight <= 0 || weight > vehicleMaxWeight) {
+          throw new Error(`Invalid weight: ${weight}. Weight must be greater than 0 and less than or equal to max vehicle weight.`);
+      }
+      const distance = parseInt(distanceStr);
+      if (distance <= 0) {
+        throw new Error(`Invalid distance: ${distance}. Distance must be greater than 0.`);
+      }
+      if (offerCode === '') {
+          throw new Error(`Invalid or empty offercode for package:${i + 1}`);
+      }
+      const pkg = new Package(id, weight, distance, offerCode);
+      packages.set(pkg.id, pkg);
+      packageList.insertPackage(pkg);
+    } catch (error: any) {
+        throw new Error(`Error on ${i}th package input: ${error.message}`);
+    }
+  }
+  const shipments = packageList.generateShipments(Number(vehicleMaxWeight));
+  return {
+      packages: packages,
+      shipments: shipments
+  };
+};
 
-  
- // const order = new Order(Number(baseDeliveryCost), packages, vehicles);
-  return packageList;
+const parseInput = (input: string[]): Order => {
+  try {
+    const [baseDeliveryCostStr, numberOfPackagesStr, ...rest] = input.map((item) => item.split(' ')[0]);
+    const baseDeliveryCost = parseInt(baseDeliveryCostStr)
+    if(isNaN(baseDeliveryCost)) {
+      throw new Error("Invalid baseDelivery cost. Must be a number");
+    }
+    const numberOfPackages = parseInt(numberOfPackagesStr);
+    if(isNaN(numberOfPackages) || numberOfPackages <= 0) {
+      throw new Error("Invalid number of packages. Must be a number greater than zero");
+    }
+    const [countStr, maxSpeedStr, maxWeightStr] = rest.splice(-3);  
+    const count = parseInt(countStr)
+    if(isNaN(count) || count <= 0) {
+      throw new Error("Invalid number of vehicles. Must be a number greater than zero");
+    }
+    const maxSpeed = parseInt(maxSpeedStr);
+    if(isNaN(maxSpeed) || maxSpeed <= 0) {
+      throw new Error("Invalid number for max speed. Must be a number greater than zero");
+    }
+    const maxWeight = parseInt(maxWeightStr);
+    if(isNaN(maxWeight) || maxWeight <= 0) {
+      throw new Error("Invalid number for max weight. Must be a number greater than zero");
+    }
+    const { packages, shipments} = createPackagesAndShipments(rest, numberOfPackages, maxWeight); 
+    const deliveryPartners:DeliveryPartner[] = generateDeliveryPartners(count, maxSpeed);
+    const order = new Order(baseDeliveryCost, packages, shipments, deliveryPartners);
+    return order;
+  } catch(error:any) {
+    throw new Error(error.message);
+  }
 };
 
 const main = (input: string[]) => {
   OfferCodeManager.initialiseOffercodes();
   try {
-    const shipmentLineup = parseInput(input);
-    const batches = shipmentLineup.generateShipmentBatches(100);
-    console.log(batches, "BATCHES------------------");
+    const order = parseInput(input);
+    order.printDeliveryCostAndETA();
   } catch (error:any) {
     console.log(error.message);
   }

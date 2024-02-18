@@ -9,27 +9,18 @@ export class Package {
     private _deliveryCost:number;
     private _discount:number;
     private _offerCode?: OfferCode;
-    private _isPickedForShipment: boolean
-
-
+    private _isPickedForShipment: boolean;
+    private _eta:number;
 
     constructor(id: string, weight: number, distance: number,offerCodeName?: string) {
         this._id = id;
-        if(weight <= 0) {
-            throw new Error("Weight must be greater than zero.")
-        }
-        if(distance <= 0) {
-            throw new Error("Distance must be greater than zero");
-        }
-        if(offerCodeName && !OfferCodeManager.getOfferCodeByName(offerCodeName)) {
-            throw new Error("Offer code does not exist.");
-        }
         this._weight = weight;
         this._distance = distance;
         this._offerCode = offerCodeName ? OfferCodeManager.getOfferCodeByName(offerCodeName) : undefined;
         this._deliveryCost = 0;
         this._discount = 0;
         this._isPickedForShipment = false;
+        this._eta = 0;
     }
 
     get id(): string {
@@ -72,18 +63,26 @@ export class Package {
         this._isPickedForShipment = isPicked;
     }
 
+    get eta():number {
+        return this._eta;
+    }
+
+    set eta(eta:number) {
+        this._eta = eta;
+    }
+
     calculateDeliveryCostAndDiscount(baseDeliveryCost:number):void {
         let cost = baseDeliveryCost + (this._weight * COST_PER_KG) + (this._distance * COST_PER_KM);
         let discount = 0;
         if(this._offerCode && this._offerCode.isOfferValid(this._weight, this._distance)) {
-            discount = cost*(this._offerCode.discountPercent/100);
+            discount = parseFloat((cost*(this._offerCode.discountPercent/100)).toFixed(2));
             cost = cost - discount;
         }
         this.setDeliveryCost(cost);
         this.setDiscount(discount);
     }
 
-    printDeliveryCost ():string {
-        return  `${this._id} ${this._discount} ${this._deliveryCost}`
+    printDeliveryCostAndETA ():string {
+        return  `${this._id} ${this._discount} ${this._deliveryCost} ${this._eta}`
     }
 }
