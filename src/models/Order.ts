@@ -1,6 +1,5 @@
 import { DeliveryPartner } from "./DeliveryPartner";
 import { Package } from "./Package";
-import { PackageList } from "./PackageList";
 import { Shipment } from "./Shipment";
 
 export class Order {

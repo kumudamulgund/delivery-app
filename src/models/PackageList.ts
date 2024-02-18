@@ -86,32 +86,4 @@ export class PackageList {
         }
         return shipments;
     }
-
-    
-    
-    search(weight: number): Package | null {
-        if (!this.head) {
-            return null;
-        }
-        if(!this.head.next) {
-            return this.head.value;
-        }
-        let current: PackageNode | null = this.head;
-        let closestMatch: Package | null = null;
-
-        while (current) {
-            if(!current) {
-                break;
-            }
-            if (!current.value.isPickedForShipment && current.value.weight <= weight) {
-                if (!closestMatch || current.value.weight > closestMatch.weight) {
-                    closestMatch = current.value;
-                } else if (current.value.weight === closestMatch.weight && current.value.distance < closestMatch.distance) {
-                    closestMatch = current.value;
-                }
-            }
-            current = current.next;
-        }
-        return closestMatch;
-    }
 }
