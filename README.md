@@ -6,7 +6,7 @@
   And, finally provide the discount applied, total delivery cost and ETA of each package.
   Below are the conditions set by Kiki and Tombo to prioritise the deliveries and boost their business.
   1. One offercode can be applied per package
-  2. Apply discount only if offercide conditions are met
+  2. Apply discount only if offercode conditions are met
   3. The delivery partners will have identical vehicles. i.e, their max speed and maximum weight limit is same across all vehicles
   4. Each delivery partner can carry multiple packages at a time, and there are certain strategies involved in selecting packages together to form a shipment.
      Shipment Selection strategies:
@@ -16,7 +16,7 @@
     
   ## Installation steps
   Node Version used: v16.13.1
-  `npm Install`
+  `npm install`
   `npm run start`
 
   
@@ -41,3 +41,4 @@
   2. `isOfferValid` function in OfferCode class
     ![Getting Started](./OfferCodeTest.png)
   3. `generateBatch` and  `generateShipments` functions within PackageList class which forms the basis for Shipment pickup within Order
+    ![Getting Started](./PackageListTest.png)
