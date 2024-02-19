@@ -34,7 +34,9 @@
     PKG3 32.5 617.5 0.71<br>
 
       
-  ## Test Coverage
+  ## Tests  
+   Run `npm run test` command to run the tests.
+   
   I have written tests for the following:                  
    1. `calculateDeliveryCostAndDiscount` function within Package class. This function is used to calculate the discount applied and total delivery cost.
     ![Getting Started](./PackageTest.png)
@@ -42,3 +44,4 @@
     ![Getting Started](./OfferCodeTest.png)
   3. `generateBatch` and  `generateShipments` functions within PackageList class which forms the basis for Shipment pickup within Order
     ![Getting Started](./PackageListTest.png)
+
