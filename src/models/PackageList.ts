@@ -19,6 +19,13 @@ export class PackageList {
         this.head = null;
         this.size = 0;
     }
+    
+    private shouldMove(current:PackageNode, pkg:Package) {
+        return (
+            current.value.weight > pkg.weight ||
+            (current.value.weight === pkg.weight && current.value.distance < pkg.distance)
+        );
+    }
 
     insertPackage(pkg:Package) {
         const newPkgNode = new PackageNode(pkg);
@@ -29,9 +36,7 @@ export class PackageList {
         }
         let current:PackageNode | null = this.head;
         let prev: PackageNode | null = null;
-        while (current && (current.value.weight > pkg.weight || 
-            (current.value.weight === pkg.weight && current.value.distance < pkg.distance)
-        )) {
+        while (current && this.shouldMove(current, pkg)) {
             prev = current;
             current = current.next;
         }

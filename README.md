@@ -38,7 +38,7 @@
    Run `npm run test` command to run the tests.
    
   I have written tests for the following:                  
-   1. `calculateDeliveryCostAndDiscount` function within Package class. This function is used to calculate the discount applied and total delivery cost.
+   1. `calculateDeliveryCost` function within Package class. This function is used to calculate the discount applied and total delivery cost.
     ![Getting Started](./PackageTest.png)
   2. `isOfferValid` function in OfferCode class
     ![Getting Started](./OfferCodeTest.png)

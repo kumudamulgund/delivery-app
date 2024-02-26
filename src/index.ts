@@ -1,5 +1,5 @@
 import { Package } from './models/Package';
-import { OfferCodeManager } from './OfferCodeManager';
+import { OfferCodes } from './models/OfferCodes';
 import { Order } from './models/Order';
 import { PackageList } from './models/PackageList';
 import { DeliveryPartner } from './models/DeliveryPartner';
@@ -16,7 +16,7 @@ const generateDeliveryPartners = (noOfPartners:number, maxSpeed:number):Delivery
   return deliveryPartners;
 }
 
-const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehicleMaxWeight: number):{packages:Map<string, Package>, shipments:Shipment[]} => {
+const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehicleMaxWeight: number, offerCodes:OfferCodes):{packages:Map<string, Package>, shipments:Shipment[]} => {
   let packageList = new PackageList();
   const packages = new Map<string, Package>();
 
@@ -44,7 +44,7 @@ const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehi
       if (offerCode === '') {
           throw new Error(`Invalid or empty offercode for package:${i + 1}`);
       }
-      const pkg = new Package(id, weight, distance, offerCode);
+      const pkg = new Package(id, weight, distance, offerCodes.getOfferCodeByName(offerCode));
       packages.set(pkg.id, pkg);
       packageList.insertPackage(pkg);
     } catch (error: any) {
@@ -58,7 +58,7 @@ const createPackagesAndShipments = (input: any[], numberOfPackages: number, vehi
   };
 };
 
-const parseInput = (input: string[]): Order => {
+const parseInput = (input: string[], offerCodes:OfferCodes): Order => {
   try {
     const [baseDeliveryCostStr, numberOfPackagesStr, ...rest] = input.map((item) => item.split(' ')[0]);
     const baseDeliveryCost = parseFloat(baseDeliveryCostStr)
@@ -82,7 +82,7 @@ const parseInput = (input: string[]): Order => {
     if(isNaN(maxWeight) || maxWeight <= 0) {
       throw new Error("Invalid number for max weight. Must be a number greater than zero");
     }
-    const { packages, shipments} = createPackagesAndShipments(rest, numberOfPackages, maxWeight); 
+    const { packages, shipments} = createPackagesAndShipments(rest, numberOfPackages, maxWeight, offerCodes); 
     const deliveryPartners:DeliveryPartner[] = generateDeliveryPartners(count, maxSpeed);
     const order = new Order(baseDeliveryCost, packages, shipments, deliveryPartners);
     return order;
@@ -92,9 +92,9 @@ const parseInput = (input: string[]): Order => {
 };
 
 const main = (input: string[]) => {
-  OfferCodeManager.initialiseOffercodes();
   try {
-    const order = parseInput(input);
+    const offerCodes = new OfferCodes();
+    const order = parseInput(input, offerCodes);
     order.printDeliveryCostAndETA();
   } catch (error:any) {
     console.log(error.message);

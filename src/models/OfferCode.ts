@@ -1,5 +1,5 @@
 export class OfferCode {
-    private _offerName: string;
+    private _name: string;
     private _minWeight: number;
     private _maxWeight: number;
     private _minDistance: number;
@@ -7,14 +7,14 @@ export class OfferCode {
     private _discountPercent: number;
 
     constructor(
-        offerName: string,
+        name: string,
         minWeight: number,
         maxWeight: number,
         minDistance: number,
         maxDistance: number,
         discountPercent: number
     ) {
-        this._offerName = offerName;
+        this._name = name;
         this._minWeight = minWeight;
         this._maxWeight = maxWeight;
         this._minDistance = minDistance;
@@ -22,8 +22,8 @@ export class OfferCode {
         this._discountPercent = discountPercent;
     }
 
-    get offerName(): string {
-        return this._offerName;
+    get name(): string {
+        return this._name;
     }
 
     get minWeight(): number {
@@ -50,4 +50,14 @@ export class OfferCode {
         return (weight >= this._minWeight && weight <= this._maxWeight && 
             distance >= this._minDistance && distance <= this._maxDistance )
     }
+
+    calculateDiscountOn(cost:number, weight:number, distance:number): number {
+        let discount = 0;
+        if(this.isOfferValid(weight, distance)) {
+            discount = parseFloat((cost*(this.discountPercent/100)).toFixed(2));
+        }
+        return discount;
+    }
+
+    
 }
