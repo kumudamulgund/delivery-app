@@ -24,7 +24,7 @@ export class Order {
     }
 
     private calculateDeliveryCostsAndETA(packages: Package[], deliveryPartner:DeliveryPartner):void {
-        packages.map((pkg) => {
+        packages.forEach((pkg) => {
             pkg.calculateDeliveryCost(this._baseDeliveryCost);
             pkg.eta = deliveryPartner.elapsedTime + deliveryPartner.arrivalTimeBy(pkg.distance);
             this._packages.set(pkg.id, pkg);
