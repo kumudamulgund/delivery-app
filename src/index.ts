@@ -5,7 +5,6 @@ import { PackageList } from './models/PackageList';
 import { DeliveryPartner } from './models/DeliveryPartner';
 import { DELIVERY_PARTNER_ID_PREFIX } from './models/config';
 import { Shipment } from './models/Shipment';
-import { generateInvoice } from './utils';
 import { ConsolePrinter } from './print/consolePrinter';
 
 const generateDeliveryPartners = (noOfPartners:number, maxSpeed:number):DeliveryPartner[] => {
