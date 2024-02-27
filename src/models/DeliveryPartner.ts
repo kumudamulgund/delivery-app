@@ -13,11 +13,10 @@ export class DeliveryPartner {
         return this._id;
     }
 
-    get maxSpeed():number {
-        return this._maxSpeed;
-    }
-
     arrivalTimeBy(distance:number):number {
+        if(distance < 0) {
+            throw new Error("distance cannot be a negative number");
+        }
         const travelDuration = distance / this._maxSpeed;
         const arrivalTime = (travelDuration + Number.EPSILON) * 100 / 100;
         return parseFloat(arrivalTime.toFixed(2));
