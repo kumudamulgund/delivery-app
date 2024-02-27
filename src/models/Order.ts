@@ -19,12 +19,8 @@ export class Order {
         return shipments.sort((a,b) => b.weight - a.weight)
     }
 
-    get baseDeliveryCost(): number {
-        return this._baseDeliveryCost;
-    }
-
-    get shipments():Shipment[] {
-        return this._shipments;
+    get packages():Package[] {
+       return  Array.from(this._packages.values());
     }
 
     private calculateDeliveryCostsAndETA(packages: Package[], deliveryPartner:DeliveryPartner):void {
@@ -41,7 +37,7 @@ export class Order {
         return index;
     }
 
-    private calculateShipmentCostAndETA():void {
+    calculateShipmentCostAndETA():void {
         let currentShipment = 0;
         while (currentShipment < this._shipments.length) {
             const shipment = this._shipments[currentShipment];
@@ -54,17 +50,5 @@ export class Order {
         } 
     }
 
-    printDeliveryCostAndETA():void {
-        this.calculateShipmentCostAndETA();
-        const invoice = Array.from(this._packages.values()).reduce((invoice, currentPackage, currentIndex) => {
-            const packageInvoice =  currentPackage.printDeliveryCostAndETA();
-            if(currentIndex === 0) {
-                return `${packageInvoice} \n`;
-            } else {
-                return `${invoice}${packageInvoice} \n`  
-            }
-        },'')
 
-        console.log(invoice);
-    }
 }

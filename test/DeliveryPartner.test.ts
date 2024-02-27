@@ -24,5 +24,7 @@ describe('DeliveryPartner', () => {
       const callWithNegativeDistance = () => partner.arrivalTimeBy(distance);
       expect(callWithNegativeDistance).toThrowError('distance cannot be a negative number');
     });
+
   });
+  
 });

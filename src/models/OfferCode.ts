@@ -26,26 +26,6 @@ export class OfferCode {
         return this._name;
     }
 
-    get minWeight(): number {
-        return this._minWeight;
-    }
-
-    get maxWeight(): number {
-        return this._maxWeight;
-    }
-
-    get minDistance(): number {
-        return this._minDistance;
-    }
-    
-    get maxDistance(): number {
-        return this._maxDistance;
-    }
-
-    get discountPercent(): number {
-        return this._discountPercent;
-    }
-
     isOfferValid(weight:number, distance:number):boolean {
         return (weight >= this._minWeight && weight <= this._maxWeight && 
             distance >= this._minDistance && distance <= this._maxDistance )
@@ -54,7 +34,7 @@ export class OfferCode {
     calculateDiscountOn(cost:number, weight:number, distance:number): number {
         let discount = 0;
         if(this.isOfferValid(weight, distance)) {
-            discount = parseFloat((cost*(this.discountPercent/100)).toFixed(2));
+            discount = parseFloat((cost*(this._discountPercent/100)).toFixed(2));
         }
         return discount;
     }

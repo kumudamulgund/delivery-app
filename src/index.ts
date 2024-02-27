@@ -5,6 +5,7 @@ import { PackageList } from './models/PackageList';
 import { DeliveryPartner } from './models/DeliveryPartner';
 import { DELIVERY_PARTNER_ID_PREFIX } from './models/config';
 import { Shipment } from './models/Shipment';
+import { generateInvoice } from './utils';
 
 const generateDeliveryPartners = (noOfPartners:number, maxSpeed:number):DeliveryPartner[] => {
   const deliveryPartners:DeliveryPartner[] = [] 
@@ -95,7 +96,9 @@ const main = (input: string[]) => {
   try {
     const offerCodes = new OfferCodes();
     const order = parseInput(input, offerCodes);
-    order.printDeliveryCostAndETA();
+    order.calculateShipmentCostAndETA();
+    const invoice = generateInvoice(order.packages);
+    console.log(invoice);
   } catch (error:any) {
     console.log(error.message);
   }

@@ -81,7 +81,4 @@ export class Package {
         this.setDiscount(discount);
     }
 
-    printDeliveryCostAndETA ():string {
-        return  `${this._id} ${this._discount} ${this._deliveryCost} ${this._eta}`
-    }
 }
